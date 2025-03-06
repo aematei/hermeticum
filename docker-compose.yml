@@ -9,3 +9,19 @@ services:
       - ./apps/backend/api_gateway:/app
     environment:
       - ENV=development
+
+  postgres:
+      image: postgres:15
+      container_name: hermeticum_postgres
+      restart: always
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_USER: hermeticum
+        POSTGRES_PASSWORD: secretpassword
+        POSTGRES_DB: journal_db
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
