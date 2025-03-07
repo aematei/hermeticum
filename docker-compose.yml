@@ -11,17 +11,29 @@ services:
       - ENV=development
 
   postgres:
-      image: postgres:15
-      container_name: hermeticum_postgres
-      restart: always
-      ports:
-        - "5432:5432"
-      environment:
-        POSTGRES_USER: hermeticum
-        POSTGRES_PASSWORD: secretpassword
-        POSTGRES_DB: journal_db
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
+    image: postgres:15
+    container_name: hermeticum_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: hermeticum
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: journal_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  journal_service:
+    build:
+      context: ./apps/backend/journal_service
+    container_name: journal_service
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://hermeticum:secretpassword@postgres/journal_db
+    ports:
+      - "8001:8001"
 
 volumes:
   postgres_data:

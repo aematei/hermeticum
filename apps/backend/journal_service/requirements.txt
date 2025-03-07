@@ -1,6 +1,6 @@
 fastapi
-fastapi
 sqlalchemy
 psycopg2-binary
 alembic
-
+uvicorn
+python-dotenv
