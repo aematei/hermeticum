@@ -1,5 +1,7 @@
 # 🧙‍♂️ Hermeticum
 
+<img width="280" alt="Screenshot 2025-03-03 at 9 17 57 PM" src="https://github.com/user-attachments/assets/a799bfc2-7699-4ed0-84f1-7cf8574b3d16" />
+
 **Hermeticum** is an **AI-powered tarot journaling platform** designed to help users **record insights, track ideas, and explore patterns in their thoughts**.
 
 It combines structured journaling with AI-guided reflection, offering **tarot deck integrations and spread analysis** for self-discovery and creative insight.
