@@ -9,6 +9,8 @@ services:
       - ./apps/backend/api_gateway:/app
     environment:
       - ENV=development
+    depends_on:
+      - journal_service
 
   postgres:
     image: postgres:15
