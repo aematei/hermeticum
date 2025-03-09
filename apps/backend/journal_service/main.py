@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db import get_db
-from models import JournalEntry
+from models import JournalEntry, User
 from pydantic import BaseModel
 import uuid
 
@@ -55,3 +55,11 @@ def delete_journal_entry(journal_id: uuid.UUID, db: Session = Depends(get_db)):
     db.delete(entry)
     db.commit()
     return {"message": "Journal entry deleted successfully"}
+
+@app.get("/users/{user_id}/journals")
+def get_journal_entries_for_user(user_id: uuid.UUID, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    entries = db.query(JournalEntry).filter(JournalEntry.user_id == user_id).all()
+    return entries
