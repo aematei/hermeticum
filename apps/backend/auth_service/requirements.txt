@@ -1,0 +1,5 @@
+fastapi
+authlib
+python-dotenv
+PyJWT
+httpx
