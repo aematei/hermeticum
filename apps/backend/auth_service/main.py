@@ -1,6 +1,8 @@
 import os
 import jwt
 import httpx
+import requests
+from pydantic import BaseModel
 from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from dotenv import load_dotenv
@@ -16,8 +18,32 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-oauth2_scheme = OAuth2AuthorizationCodeBearer(tokenUrl="token")
+oauth2_scheme = OAuth2AuthorizationCodeBearer(
+    authorizationUrl="https://accounts.google.com/o/oauth2/auth",
+    tokenUrl="https://oauth2.googleapis.com/token"
+)
 
+class TokenRequest(BaseModel):
+    code: str
+    redirect_uri: str
+
+@app.post("/token")
+def exchange_token(request: TokenRequest):
+    """ Exchanges authorization code for access token """
+    data = {
+        "client_id": "YOUR_CLIENT_ID",
+        "client_secret": "YOUR_CLIENT_SECRET",
+        "code": request.code,
+        "redirect_uri": request.redirect_uri,
+        "grant_type": "authorization_code"
+    }
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    response = requests.post("https://oauth2.googleapis.com/token", data=data, headers=headers)
+    
+    if response.status_code != 200:
+        raise HTTPException(status_code=400, detail="Token exchange failed")
+
+    return response.json()
 
 @app.get("/auth/login")
 def login():

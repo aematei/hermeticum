@@ -3,3 +3,4 @@ authlib
 python-dotenv
 PyJWT
 httpx
+requests
