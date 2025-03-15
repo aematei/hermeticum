@@ -9,21 +9,11 @@ services:
       - ./apps/backend/api_gateway:/app
     environment:
       - ENV=development
+      - JOURNAL_SERVICE_URL=http://journal_service:8001
     depends_on:
       - journal_service
-
-  postgres:
-    image: postgres:15
-    container_name: hermeticum_postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: hermeticum
-      POSTGRES_PASSWORD: secretpassword
-      POSTGRES_DB: journal_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hermeticum_network
 
   journal_service:
     build:
@@ -38,24 +28,21 @@ services:
       - "8001:8001"
     volumes:
       - ./apps/backend/journal_service:/app
-    env_file:
-      - ./apps/backend/journal_service/.env
-    depends_on:
-      - postgres
+    networks:
+      - hermeticum_network
   
-  auth_service:
-    build:
-      context: ./apps/backend/auth_service
-    container_name: auth_service
+  ai_service:
+    build: ./apps/backend/ai_service
+    container_name: hermeticum_ai_service
+    restart: always
     ports:
-      - "8002:8002"
+      - "8003:8003"
     volumes:
-      - ./apps/backend/auth_service:/app
-      - ./firebase-credentials.json:/app/firebase-credentials.json:ro
-    env_file:
-      - ./apps/backend/auth_service/.env
+      - ./apps/backend/ai_service:/app
     environment:
-      - FIREBASE_CREDENTIALS_PATH=/app/firebase-credentials.json
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    networks:
+      - hermeticum_network
 
-volumes:
-  postgres_data:
+networks:
+  hermeticum_network:
