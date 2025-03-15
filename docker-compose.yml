@@ -30,12 +30,32 @@ services:
       context: ./apps/backend/journal_service
     container_name: journal_service
     restart: always
-    depends_on:
-      - postgres
     environment:
-      DATABASE_URL: postgresql://hermeticum:secretpassword@postgres/journal_db
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_KEY=${SUPABASE_SERVICE_KEY}
     ports:
       - "8001:8001"
+    volumes:
+      - ./apps/backend/journal_service:/app
+    env_file:
+      - ./apps/backend/journal_service/.env
+    depends_on:
+      - postgres
+  
+  auth_service:
+    build:
+      context: ./apps/backend/auth_service
+    container_name: auth_service
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./apps/backend/auth_service:/app
+      - ./firebase-credentials.json:/app/firebase-credentials.json:ro
+    env_file:
+      - ./apps/backend/auth_service/.env
+    environment:
+      - FIREBASE_CREDENTIALS_PATH=/app/firebase-credentials.json
 
 volumes:
   postgres_data:

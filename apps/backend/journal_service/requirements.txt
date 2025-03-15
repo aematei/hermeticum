@@ -1,8 +1,6 @@
-fastapi
-sqlalchemy
-psycopg2-binary
-alembic
-uvicorn
-python-dotenv
-pytest
-httpx
+fastapi==0.104.1
+uvicorn==0.23.2
+httpx>=0.23.0,<0.24.0
+python-dotenv==1.0.0
+supabase==1.0.3
+pydantic==2.4.2
