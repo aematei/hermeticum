@@ -1,9 +1,12 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Request, HTTPException
 import httpx
+import os
 
-router = APIRouter()
+# Get Journal service URL from environment variables
+JOURNAL_SERVICE_URL = os.getenv("JOURNAL_SERVICE_URL", "http://journal_service:8001")
 
-JOURNAL_SERVICE_URL = "http://journal_service:8001"
+# Create router
+router = APIRouter(tags=["Journal Service"])
 
 @router.get("/")
 async def read_root():
