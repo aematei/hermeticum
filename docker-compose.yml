@@ -10,8 +10,10 @@ services:
     environment:
       - ENV=development
       - JOURNAL_SERVICE_URL=http://journal_service:8001
+      - AI_SERVICE_URL=http://ai_service:8003
     depends_on:
       - journal_service
+      - ai_service
     networks:
       - hermeticum_network
 

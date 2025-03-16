@@ -76,3 +76,31 @@ async def delete_journal_entry(journal_id: str):
         raise HTTPException(status_code=404, detail="Journal entry not found")
     
     return {"message": "Journal entry deleted successfully"}
+
+@app.get("/")
+async def root():
+    """Root endpoint for Journal Service"""
+    return {
+        "service": "Journal Service",
+        "status": "running",
+        "version": "1.0.0"
+    }
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Journal Service"""
+    try:
+        # Try a simple query to check database connection
+        result = supabase.table("journals").select("id").limit(1).execute()
+        return {
+            "status": "healthy",
+            "database_connected": True,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "database_connected": False,
+            "error": str(e),
+            "timestamp": datetime.utcnow().isoformat()
+        }
